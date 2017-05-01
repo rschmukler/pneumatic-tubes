@@ -77,7 +77,7 @@ Lets say you want to print all received events:
     (println "Received event" event-v "from" tube)
     (handler tube event-v)))                                             ;; call wrapped handler
 
-(defn wrapped-handlers (tubes/wrap-handlers handlers trace-middleware))  ;; decorated handlers
+(def wrapped-handlers (tubes/wrap-handlers handlers trace-middleware))   ;; decorated handlers
 
 (def rx (receiver wrapped-handlers))                                     ;; pass handlers to receiver
 ```
