@@ -1,7 +1,7 @@
 (ns pneumatic-tubes.core
   (:use [clojure.tools.logging :only [info warn error]]
         [clojure.set])
-  (:require [clojure.core.async :refer [<! >!! go-loop chan]]))
+  (:require [clojure.core.async :refer [<! >! go go-loop chan]]))
 
 ;; -------- tube-registry-------------------------------------------------------------------
 
@@ -115,7 +115,7 @@
 (defn receive
   "Asynchronously process the incoming event"
   ([receiver from event-v]
-   (>!! (:in-queue receiver) {:from from :event event-v})))
+   (go (>! (:in-queue receiver) {:from from :event event-v}))))
 
 (defn wrap-handlers
   "Wraps a map of handlers with one or more middlewares"
@@ -130,19 +130,23 @@
 
 (defn dispatch
   "Send event vector to one or more tubes.
-  Destination (parameter 'to') can be a map, a predicate function or :all keyword "
-  ([transmitter to event-v]
-   (let [target-tube-ids (map :tube/id (find-tubes-by-criteria @tube-registry to))]
-     (>!! (:out-queue transmitter) {:to target-tube-ids :event event-v})) to))
+  Destination (parameter 'to') can be a map, a predicate function or :all keyword.
+  The event vector (parameter event) ca be either a vector or a function which takes a tube and returns event vector"
+  ([transmitter to event]
+   (let [out-chan (:out-queue transmitter)
+         target-tubes (find-tubes-by-criteria @tube-registry to)
+         event-provider (if (fn? event) event (fn [_] event))]
+     (go (doseq [tube target-tubes]
+           (>! out-chan {:to (:tube/id tube) :event (event-provider tube)}))))
+   to))
 
 (defn- send-to-tube [tube-registry tube-id event-v]
   (let [send! (get-in tube-registry [:send-fns tube-id])]
     (send! event-v)))
 
 (defn- handle-outgoing
-  [tube-registry {tube-ids :to event-v :event}]
-  (doseq [tube-id tube-ids]
-    (send-to-tube tube-registry tube-id event-v)))
+  [tube-registry {tube-id :to event-v :event}]
+  (send-to-tube tube-registry tube-id event-v))
 
 (defn- call-listeners [on-send {to :to event-v :event}]
   (when on-send
