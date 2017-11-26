@@ -1,4 +1,4 @@
-(defproject pneumatic-tubes "0.3.0-SNAPSHOT"
+(defproject pneumatic-tubes "0.3.0"
   :description "WebSocket based transport of events between re-frame app and server"
   :url "https://github.com/drapanjanas/pneumatic-tubes"
   :license {:name "Eclipse Public License"
