@@ -38,6 +38,12 @@
                            :messages {}}))))
 
 (reg-event-db
+  :exit-chat-room
+  (fn [_ _]
+    (tubes/destroy! tube)
+    db/default-db))
+
+(reg-event-db
   :post-message
   send-to-server
   (fn [db _] db))

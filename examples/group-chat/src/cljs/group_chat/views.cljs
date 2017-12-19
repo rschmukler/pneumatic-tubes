@@ -75,7 +75,8 @@
              [:div.pull-left
               [:img.media-object.img-circle.user-icon {:src "assets/img/unknown.png"}]]
              [:div.media-body
-              [:h5 user]]]]])]]]]]])
+              [:h5 user]]]]])]]]
+     [:button.btn.btn-primary {:on-click #(dispatch [:exit-chat-room])} "Exit"]]]])
 
 (defn main-panel []
   (let [room-name (subscribe [:chat-room/name])
