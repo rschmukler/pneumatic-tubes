@@ -5,7 +5,7 @@
                            [re-frame "0.9.2"]
                            [compojure "1.5.2"]
                            [ring "1.5.1"]
-                           [pneumatic-tubes "0.2.0"]]
+                           [pneumatic-tubes "0.3.0"]]
 
             :min-lein-version "2.5.3"
 
