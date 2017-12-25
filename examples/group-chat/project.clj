@@ -6,7 +6,7 @@
                            [compojure "1.5.2"]
                            [ring "1.5.1"]
                            [ring/ring-defaults "0.2.1"]
-                           [pneumatic-tubes "0.4.0-SNAPSHOT"]
+                           [pneumatic-tubes "0.3.1-SNAPSHOT"]
                  [http-kit "2.2.0"]
                  [environ "1.1.0"]
                  [ch.qos.logback/logback-classic "1.1.7"]
